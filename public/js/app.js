@@ -1930,7 +1930,7 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ __webpack_exports__["default"] = ({
   mounted: function mounted() {
-    console.log("Component mounted.");
+    console.log('Component mounted.');
   }
 });
 
@@ -2012,6 +2012,11 @@ __webpack_require__.r(__webpack_exports__);
 var render = function render() {
   var _vm = this,
     _c = _vm._self._c;
+  return _vm._m(0);
+};
+var staticRenderFns = [function () {
+  var _vm = this,
+    _c = _vm._self._c;
   return _c("div", {
     staticClass: "container"
   }, [_c("div", {
@@ -2024,9 +2029,8 @@ var render = function render() {
     staticClass: "card-header"
   }, [_vm._v("Example Component")]), _vm._v(" "), _c("div", {
     staticClass: "card-body"
-  }, [_vm._v("I'm an example component.")]), _vm._v(" "), _c("example-2")], 1)])])]);
-};
-var staticRenderFns = [];
+  }, [_vm._v("\n                    I'm an example component.\n                ")])])])])]);
+}];
 render._withStripped = true;
 
 
@@ -53590,26 +53594,23 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _routes__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./routes */ "./resources/js/routes.js");
-/* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm.js");
+/* harmony import */ var vue_router__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue-router */ "./node_modules/vue-router/dist/vue-router.esm.js");
+/* harmony import */ var _routes__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./routes */ "./resources/js/routes.js");
 /* harmony import */ var _Index_vue__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Index.vue */ "./resources/js/Index.vue");
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 
 
 window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.common.js");
-Vue.use(vue_router__WEBPACK_IMPORTED_MODULE_1__["default"]);
 
-//Global components
 // Vue.component(
 //     "example-component",
 //     require("./components/ExampleComponent.vue").default
 // );
-// Vue.component("example-2", require("./components/Example2.vue").default);
-
+Vue.use(vue_router__WEBPACK_IMPORTED_MODULE_0__["default"]);
 var app = new Vue({
   el: "#app",
-  router: _routes__WEBPACK_IMPORTED_MODULE_0__["default"],
+  router: _routes__WEBPACK_IMPORTED_MODULE_1__["default"],
   components: {
     index: _Index_vue__WEBPACK_IMPORTED_MODULE_2__["default"]
   }
@@ -53854,8 +53855,8 @@ var router = new vue_router__WEBPACK_IMPORTED_MODULE_2__["default"]({
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-__webpack_require__(/*! /Users/trungs_macos/Desktop/Workspace/Laravel_VueJS/resources/js/app.js */"./resources/js/app.js");
-module.exports = __webpack_require__(/*! /Users/trungs_macos/Desktop/Workspace/Laravel_VueJS/resources/sass/app.scss */"./resources/sass/app.scss");
+__webpack_require__(/*! /Users/trungs_macos/Desktop/Workspace/Laravel_VueJS_SPA/resources/js/app.js */"./resources/js/app.js");
+module.exports = __webpack_require__(/*! /Users/trungs_macos/Desktop/Workspace/Laravel_VueJS_SPA/resources/sass/app.scss */"./resources/sass/app.scss");
 
 
 /***/ })
