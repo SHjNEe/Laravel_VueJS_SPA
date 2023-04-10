@@ -1,8 +1,10 @@
 <template>
-    <div>
-        <h1>{{ title }}</h1>
-        <p>{{ description }}</p>
-        <p>{{ price }}</p>
+    <div class="card">
+        <div class="card-body">
+            <h1 class="card-title">{{ itemTitle }}</h1>
+            <p class="card-text">{{ itemContent }}</p>
+            <p>{{ price }}</p>
+        </div>
     </div>
 </template>
 
@@ -10,9 +12,28 @@
 export default {
     // props: ["title", "description"],
     props: {
-        title: String,
-        description: String,
+        itemTitle: String,
+        itemContent: String,
         price: Number,
     },
+    methods: {},
+    // beforeCreate() {
+    //     console.log("Before create!");
+    // },
+    created() {
+        console.log("Hello");
+    },
+    // beforeMount() {
+    //     console.log("Before mount");
+    // },
+    mounted() {
+        console.log("Mounted");
+    },
+    // beforeDestroy() {
+    //     console.log("Before destroy!");
+    // },
+    // destroyed() {
+    //     console.log("Destroy!");
+    // },
 };
 </script>
