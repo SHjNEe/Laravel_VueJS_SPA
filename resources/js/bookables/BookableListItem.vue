@@ -1,9 +1,16 @@
 <template>
     <div class="card">
         <div class="card-body">
-            <h1 class="card-title">{{ itemTitle }}</h1>
-            <p class="card-text">{{ itemContent }}</p>
-            <p>{{ price }}</p>
+            <h1 class="card-title">{{ title }}</h1>
+            <p class="card-text">{{ description }}</p>
+            <router-link
+                :to="{
+                    name: 'bookable',
+                    params: { id },
+                    // query: { name: 'Trung' },
+                }"
+                >View details</router-link
+            >
         </div>
     </div>
 </template>
@@ -12,13 +19,18 @@
 export default {
     // props: ["title", "description"],
     props: {
-        itemTitle: String,
-        itemContent: String,
-        price: Number,
+        title: String,
+        description: String,
+        id: String | Number,
     },
     methods: {},
     // beforeCreate() {
     //     console.log("Before create!");
+    // },
+    // computed: {
+    //     itemDetailUrl() {
+    //         return `/bookables/${this.id}`;
+    //     },
     // },
     created() {
         console.log("Hello");

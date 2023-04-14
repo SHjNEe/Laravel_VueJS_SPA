@@ -2,21 +2,16 @@
     <div>
         Rows is: {{ rows }}
         <div v-if="!loading">
-            <div v-for="row in rows" :key="'row' + row" class="row">
+            <div v-for="row in rows" :key="'row' + row" class="row mb-4">
                 <div
-                    class="col"
+                    class="col d-flex align-items-stretch"
                     v-for="(data, column) in datas.slice(
                         (row - 1) * columns,
                         rows * columns
                     )"
                     :key="'row' + row + column"
                 >
-                    <book-item
-                        :item-title="data.title"
-                        :item-content="data.description"
-                        :price="5000"
-                    >
-                    </book-item>
+                    <book-item v-bind="data"> </book-item>
                 </div>
             </div>
         </div>
@@ -42,23 +37,16 @@ export default {
             return this.datas === null ? 0 : Math.ceil(this.columns);
         },
     },
+    // async created() {
+    //     const request = await axios.get("/api/bookables");
+    //     this.loading = false;
+    //     return (this.datas = request.data);
+    // },
     created() {
-        console.log("Created");
-        setTimeout(() => {
-            this.datas = [
-                {
-                    id: 1,
-                    title: "Cheap Villa",
-                    description: "A very cheap villa",
-                },
-                {
-                    id: 2,
-                    title: "Cheap Villa 2",
-                    description: "A very cheap villa 2",
-                },
-            ];
+        const request = axios.get("/api/bookables").then((res) => {
+            this.datas = res.data;
             this.loading = false;
-        }, 2000);
+        });
     },
 };
 </script>
