@@ -1912,12 +1912,40 @@ __webpack_require__.r(__webpack_exports__);
   data: function data() {
     return {
       from: null,
-      to: null
+      to: null,
+      loading: false,
+      status: null,
+      errors: null,
+      avaiableBookings: null
     };
+  },
+  computed: {
+    hasError: function hasError() {
+      return 422 === this.status && this.errors !== null;
+    },
+    hasAvailability: function hasAvailability() {
+      return 200 === this.status;
+    },
+    noAvailability: function noAvailability() {
+      return 404 === this.status;
+    }
   },
   methods: {
     check: function check() {
-      alert("I Will check some thing!");
+      var _this = this;
+      this.loading = true;
+      axios.get("/api/bookables/".concat(this.$route.params.id, "/availability?from=").concat(this.from, "&to=").concat(this.to)).then(function (response) {
+        _this.status = response.status;
+        _this.avaiableBookings = response.data;
+      })["catch"](function (errors) {
+        _this.errors = errors.response.data.errors;
+        _this.status = errors.response.status;
+      }).then(function () {
+        _this.loading = false;
+      });
+    },
+    errorFor: function errorFor(fiel) {
+      return this.hasError && this.errors[fiel] ? this.errors[fiel] : null;
     }
   }
 });
@@ -2116,7 +2144,11 @@ var render = function render() {
     _c = _vm._self._c;
   return _c("div", [_c("h6", {
     staticClass: "text-uppercase text-secondary font-weight-bolder"
-  }, [_vm._v("\n        Check Availability\n    ")]), _vm._v(" "), _c("div", {
+  }, [_vm._v("\n        Check Availability\n    ")]), _vm._v(" "), _vm.noAvailability ? _c("span", {
+    staticClass: "text-danger"
+  }, [_vm._v("NOT AVAILABLE")]) : _vm._e(), _vm._v(" "), _vm.hasAvailability ? _c("span", {
+    staticClass: "text-success"
+  }, [_vm._v(" AVAILABLE")]) : _vm._e(), _vm._v(" "), _c("div", {
     staticClass: "form-row"
   }, [_c("div", {
     staticClass: "form-group col-md-6"
@@ -2132,6 +2164,9 @@ var render = function render() {
       expression: "from"
     }],
     staticClass: "form-control form-control-sm",
+    "class": [{
+      "is-invalid": this.errorFor("from")
+    }],
     attrs: {
       type: "text",
       name: "from",
@@ -2147,7 +2182,12 @@ var render = function render() {
         _vm.from = $event.target.value;
       }
     }
-  })]), _vm._v(" "), _c("div", {
+  }), _vm._v(" "), _vm._l(this.errorFor("from"), function (error, index) {
+    return _c("div", {
+      key: "from" + index,
+      staticClass: "invalid-feedback"
+    }, [_vm._v("\n                " + _vm._s(error) + "\n            ")]);
+  })], 2), _vm._v(" "), _c("div", {
     staticClass: "form-group col-md-6"
   }, [_c("label", {
     attrs: {
@@ -2161,6 +2201,9 @@ var render = function render() {
       expression: "to"
     }],
     staticClass: "form-control form-control-sm",
+    "class": [{
+      "is-invalid": this.errorFor("to")
+    }],
     attrs: {
       type: "text",
       name: "to",
@@ -2176,12 +2219,20 @@ var render = function render() {
         _vm.to = $event.target.value;
       }
     }
-  })])]), _vm._v(" "), _c("button", {
+  }), _vm._v(" "), _vm._l(this.errorFor("to"), function (error, index) {
+    return _c("div", {
+      key: "to" + index,
+      staticClass: "invalid-feedback"
+    }, [_vm._v("\n                " + _vm._s(error) + "\n            ")]);
+  })], 2), _vm._v(" "), _vm.loading ? _c("p", [_vm._v("Loading....")]) : _vm._e(), _vm._v(" "), _c("button", {
     staticClass: "btn btn-secondary btn-block",
+    attrs: {
+      disabled: _vm.loading
+    },
     on: {
       click: _vm.check
     }
-  }, [_vm._v("\n        Check!\n    ")])]);
+  }, [_vm._v("\n            Check!\n        ")])])]);
 };
 var staticRenderFns = [];
 render._withStripped = true;
@@ -6754,7 +6805,7 @@ exports = module.exports = __webpack_require__(/*! ../../../node_modules/css-loa
 
 
 // module
-exports.push([module.i, "\nlabel[data-v-39d99139] {\n    font-size: 0.7rem;\n    text-transform: uppercase;\n    color: gray;\n    font-weight: bold;\n}\n", ""]);
+exports.push([module.i, "\nlabel[data-v-39d99139] {\n    font-size: 0.7rem;\n    text-transform: uppercase;\n    color: gray;\n    font-weight: bold;\n}\n.is-invalid[data-v-39d99139] {\n    border-color: red;\n}\n", ""]);
 
 // exports
 
