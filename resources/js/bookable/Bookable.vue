@@ -11,6 +11,7 @@
                         </article>
                     </div>
                 </div>
+                <review-list :bookable-id="this.id"></review-list>
             </div>
             <div class="col-md-4 pb-4">
                 <availability></availability>
@@ -24,9 +25,14 @@
 
 <script>
 import Availability from "./Availability.vue";
+import ReviewList from "./ReviewList.vue";
 export default {
+    props: {
+        id: String,
+    },
     components: {
         Availability,
+        ReviewList,
     },
     data() {
         return {
@@ -35,8 +41,7 @@ export default {
         };
     },
     created() {
-        const bookableId = this.$route.params.id;
-        axios.get(`/api/bookables/${bookableId}`).then((res) => {
+        axios.get(`/api/bookables/${this.id}`).then((res) => {
             this.bookable = res.data.data;
             this.loading = false;
         });

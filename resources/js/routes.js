@@ -7,7 +7,12 @@ import Bookable from "./bookable/Bookable.vue";
 const routes = [
     { path: "/", component: Bookables, name: "home" },
     // { path: "/second", component: Example2, name: "second" },
-    { path: "/bookables/:id", component: Bookable, name: "bookable" },
+    {
+        path: "/bookables/:id",
+        component: Bookable,
+        name: "bookable",
+        props: true,
+    },
 ];
 
 const router = new VueRouter({ routes, mode: "history" });
