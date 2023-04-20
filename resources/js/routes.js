@@ -3,7 +3,7 @@ import Example2 from "./components/Example2.vue";
 import VueRouter from "vue-router";
 import Bookables from "./bookables/Bookables.vue";
 import Bookable from "./bookable/Bookable.vue";
-import Review from "./reviews/Review.vue";
+import Review from "./review/Review.vue";
 
 const routes = [
     { path: "/", component: Bookables, name: "home" },
@@ -12,9 +12,9 @@ const routes = [
         path: "/bookables/:id",
         component: Bookable,
         name: "bookable",
-        props: true,
+        props: true
     },
-    { path: "/review/:id", component: Review, name: "review" },
+    { path: "/review/:id", component: Review, name: "review" }
 ];
 
 const router = new VueRouter({ routes, mode: "history" });
