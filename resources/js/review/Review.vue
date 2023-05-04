@@ -1,32 +1,80 @@
 <template>
     <div>
-        <div class="form-group">
-            <label for="" class="text-muted"
-                >Select the star rating - 5 is best</label
-            >
-            <star-rating :rating="5" class="fa-3x"></star-rating>
+        <div v-if="loading">
+            <p>Loading....</p>
         </div>
-        <div class="form-group">
-            <label for="content" class="text-muted"
-                >Describe your expirience</label
-            >
-            <textarea
-                name="content"
-                cols="30"
-                rows="10"
-                class="form-control"
-            ></textarea>
+        <div v-else>
+            <div v-if="alreadyReview">
+                <h3>You've already left a review for this booking</h3>
+            </div>
+            <div v-else>
+                <div class="form-group">
+                    <label for="" class="text-muted"
+                        >Select the star rating 1 - 5 is best</label
+                    >
+                    <!-- <star-rating
+                :value="review.rating"
+                class="fa-3x"
+                @input="review.rating = $event"
+            ></star-rating> -->
+                    <star-rating
+                        class="fa-3x"
+                        v-model="review.rating"
+                    ></star-rating>
+                </div>
+                <div class="form-group">
+                    <label for="content" class="text-muted"
+                        >Describe your expirience</label
+                    >
+                    <textarea
+                        name="content"
+                        cols="30"
+                        rows="10"
+                        class="form-control"
+                        v-model="review.content"
+                    ></textarea>
+                </div>
+                <button class="btn btn-lg btn-primary btn-block" @click="check">
+                    Submit
+                </button>
+            </div>
         </div>
-        <button class="btn btn-lg btn-primary btn-block" @click="check">
-            Submit
-        </button>
     </div>
 </template>
 
 <script>
 export default {
+    data() {
+        return {
+            review: {
+                rating: null,
+                content: null
+            },
+            existingReview: null,
+            loading: false
+        };
+    },
+    created() {
+        this.loading = true;
+        axios
+            .get(`/api/reviews/${this.$route.params.id}`)
+            .then(response => {
+                this.existingReview = response.data.data;
+            })
+            .catch(error => {})
+            .then(() => {
+                this.loading = false;
+            });
+    },
     methods: {
-        check() {}
+        check() {
+            console.log(this.review);
+        }
+    },
+    computed: {
+        alreadyReview() {
+            return this.existingReview;
+        }
     }
 };
 </script>

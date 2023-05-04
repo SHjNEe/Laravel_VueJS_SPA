@@ -14,7 +14,7 @@
                 <div class="col-md-6">Piort jura</div>
                 <div class="col-md-6 d-flex justify-content-end">
                     <star-rating
-                        :rating="review.rating"
+                        :value="review.rating"
                         class="fa-lg"
                     ></star-rating>
                 </div>
@@ -34,20 +34,20 @@
 import moment from "moment";
 export default {
     props: {
-        bookableId: String,
+        bookableId: String
     },
     data() {
         return {
             loading: false,
-            reviews: null,
+            reviews: null
         };
     },
     created() {
-        axios.get(`/api/bookables/${this.bookableId}/reviews`).then((res) => {
+        axios.get(`/api/bookables/${this.bookableId}/reviews`).then(res => {
             this.reviews = res.data.data;
             this.loading = false;
         });
-    },
+    }
     // filters: {
     //     fromNow(value) {
     //         return moment(value).fromNow();
