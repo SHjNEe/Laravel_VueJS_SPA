@@ -17,13 +17,7 @@
                     v-model="from"
                     :class="[{ 'is-invalid': this.errorFor('from') }]"
                 />
-                <div
-                    class="invalid-feedback"
-                    v-for="(error, index) in this.errorFor('from')"
-                    :key="'from' + index"
-                >
-                    {{ error }}
-                </div>
+                <validation-error :errors="errorFor('from')"></validation-error>
             </div>
             <div class="form-group col-md-6">
                 <label for="to">To</label>
@@ -36,13 +30,7 @@
                     v-model="to"
                     :class="[{ 'is-invalid': this.errorFor('to') }]"
                 />
-                <div
-                    class="invalid-feedback"
-                    v-for="(error, index) in this.errorFor('to')"
-                    :key="'to' + index"
-                >
-                    {{ error }}
-                </div>
+                <validation-error :errors="errorFor('to')"></validation-error>
             </div>
             <p v-if="loading">Loading....</p>
             <button
@@ -57,6 +45,8 @@
 </template>
 
 <script>
+import { is404, is422 } from "./../shared/utils/response";
+
 export default {
     data() {
         return {
@@ -65,7 +55,7 @@ export default {
             loading: false,
             status: null,
             errors: null,
-            avaiableBookings: null,
+            avaiableBookings: null
         };
     },
     computed: {
@@ -77,21 +67,25 @@ export default {
         },
         noAvailability() {
             return 404 === this.status;
-        },
+        }
     },
     methods: {
         check() {
             this.loading = true;
             axios
                 .get(
-                    `/api/bookables/${this.$route.params.id}/availability?from=${this.from}&to=${this.to}`
+                    `/api/bookables/${
+                        this.$route.params.id
+                    }/availability?from=${this.from}&to=${this.to}`
                 )
-                .then((response) => {
+                .then(response => {
                     this.status = response.status;
                     this.avaiableBookings = response.data;
                 })
-                .catch((errors) => {
-                    this.errors = errors.response.data.errors;
+                .catch(errors => {
+                    if (is422(errors)) {
+                        this.errors = errors.response.data.errors;
+                    }
                     this.status = errors.response.status;
                 })
                 .then(() => {
@@ -102,8 +96,8 @@ export default {
             return this.hasError && this.errors[fiel]
                 ? this.errors[fiel]
                 : null;
-        },
-    },
+        }
+    }
 };
 </script>
 

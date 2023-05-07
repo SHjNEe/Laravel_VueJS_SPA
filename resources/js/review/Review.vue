@@ -1,13 +1,11 @@
 <template>
-    <div class="row" v-if="error">
-        Unknow error has occurred, please try again later!
-    </div>
+    <fatal-error v-if="error"></fatal-error>
     <div class="row" v-else>
         <div :class="[{ 'col-md-4': twoColumn }, { 'd-none': oneColumn }]">
             <div class="card">
                 <div class="card-body">
                     <div v-if="loading">Loading...</div>
-                    <div v-else>
+                    <div v-if="hasBooking">
                         <p>
                             Stayed at
                             <router-link
@@ -17,7 +15,7 @@
                                         id: booking.bookable.bookable_id
                                     }
                                 }"
-                                >Bookable</router-link
+                                >{{ booking.bookable.title }}</router-link
                             >
                         </p>
                         <p>From {{ booking.from }} to {{ booking.to }}</p>
@@ -58,11 +56,25 @@
                             rows="10"
                             class="form-control"
                             v-model="review.content"
+                            :class="[{ 'is-invalid': errorFor('content') }]"
                         ></textarea>
+                        <validation-error
+                            :errors="errorFor('content')"
+                        ></validation-error>
+                        <!-- <div>
+                            <div
+                                class="invalid-feedback"
+                                v-for="(error, index) in errorFor('content')"
+                                :key="'to' + index"
+                            >
+                                {{ error }}
+                            </div>
+                        </div> -->
                     </div>
                     <button
                         class="btn btn-lg btn-primary btn-block"
-                        @click="check"
+                        @click.prevent="submit"
+                        :disabled="sending"
                     >
                         Submit
                     </button>
@@ -73,36 +85,42 @@
 </template>
 
 <script>
-import { is404 } from "./../shared/utils/response";
+import { is404, is422 } from "./../shared/utils/response";
 export default {
     data() {
         return {
             review: {
+                id: null,
                 rating: null,
                 content: null
             },
             existingReview: null,
             booking: null,
             loading: false,
-            error: false
+            error: false,
+            errors: null,
+            sending: false
         };
     },
     created() {
         this.loading = true;
+        this.review.id = this.$route.params.id;
         axios
-            .get(`/api/reviews/${this.$route.params.id}`)
+            .get(`/api/review/${this.review.id}`)
             .then(response => {
                 this.existingReview = response.data.data;
             })
             .catch(error => {
                 if (is404(error)) {
+                    console.log("response");
+
                     return axios
-                        .get(`/api/booking-by-review/${this.$route.params.id}`)
+                        .get(`/api/booking-by-review/${this.review.id}`)
                         .then(response => {
                             this.booking = response.data.data;
                         })
                         .catch(error => {
-                            is404(error) ? {} : (this.error = true);
+                            this.error = !is404(error);
                         });
                 }
                 this.error = true;
@@ -112,8 +130,30 @@ export default {
             });
     },
     methods: {
-        check() {
-            console.log(this.review);
+        submit() {
+            this.errors = null;
+            this.sending = true;
+            axios
+                .post(`/api/review`, this.review)
+                .then(response => {
+                    console.log(response);
+                })
+                .catch(error => {
+                    if (is422(error)) {
+                        const errors = error.response.data.errors;
+                        if (errors["content"] && 1 == _.size(errors)) {
+                            this.errors = errors;
+                            return;
+                        }
+                    }
+                    // this.error = true;
+                })
+                .then(() => {
+                    this.sending = false;
+                });
+        },
+        errorFor(fiel) {
+            return this.errors && this.errors[fiel] ? this.errors[fiel] : null;
         }
     },
     computed: {
