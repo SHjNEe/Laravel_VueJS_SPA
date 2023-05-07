@@ -28,24 +28,24 @@ import Availability from "./Availability.vue";
 import ReviewList from "./ReviewList.vue";
 export default {
     props: {
-        id: String,
+        id: String | Number
     },
     components: {
         Availability,
-        ReviewList,
+        ReviewList
     },
     data() {
         return {
             bookable: null,
-            loading: true,
+            loading: true
         };
     },
     created() {
-        axios.get(`/api/bookables/${this.id}`).then((res) => {
+        axios.get(`/api/bookables/${this.id}`).then(res => {
             this.bookable = res.data.data;
             this.loading = false;
         });
-    },
+    }
 };
 </script>
 

@@ -46,15 +46,17 @@
 
 <script>
 import { is404, is422 } from "./../shared/utils/response";
+import errorsMixin from "../shared/mixins/validationErrors.js";
 
 export default {
+    mixins: [errorsMixin],
     data() {
         return {
             from: null,
             to: null,
             loading: false,
             status: null,
-            errors: null,
+            // errors: null,
             avaiableBookings: null
         };
     },
@@ -91,12 +93,12 @@ export default {
                 .then(() => {
                     this.loading = false;
                 });
-        },
-        errorFor(fiel) {
-            return this.hasError && this.errors[fiel]
-                ? this.errors[fiel]
-                : null;
         }
+        // errorFor(fiel) {
+        //     return this.hasError && this.errors[fiel]
+        //         ? this.errors[fiel]
+        //         : null;
+        // }
     }
 };
 </script>

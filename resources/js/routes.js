@@ -7,7 +7,7 @@ import Review from "./review/Review.vue";
 
 const routes = [
     { path: "/", component: Bookables, name: "home" },
-    // { path: "/second", component: Example2, name: "second" },
+    { path: "/second", component: Example2, name: "second" },
     {
         path: "/bookables/:id",
         component: Bookable,
