@@ -14,7 +14,7 @@
                 <review-list :bookable-id="this.id"></review-list>
             </div>
             <div class="col-md-4 pb-4">
-                <availability></availability>
+                <availability ></availability>
             </div>
         </div>
     </div>

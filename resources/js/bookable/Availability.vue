@@ -49,15 +49,18 @@ import { is404, is422 } from "./../shared/utils/response";
 import errorsMixin from "../shared/mixins/validationErrors.js";
 
 export default {
-    mixins: [errorsMixin],
+    // mixins: [errorsMixin],
+    props: {
+        bookableId: [String, Number]
+    },
     data() {
         return {
-            from: null,
-            to: null,
+            from: this.$store.state.lastSearch.from || null,
+            to: this.$store.state.lastSearch.to || null,
             loading: false,
             status: null,
-            // errors: null,
-            avaiableBookings: null
+            avaiableBookings: null,
+            errors: null
         };
     },
     computed: {
@@ -74,27 +77,39 @@ export default {
     methods: {
         async check() {
             this.loading = true;
-            try {
-                const result = await axios.get(
-                    `/api/bookables/${
-                        this.$route.params.id
-                    }/availability?from=${this.from}&to=${this.to}`
-                );
-                this.status = result.status;
-                this.avaiableBookings = result.data;
-            } catch (err) {
-                if (is422(errors)) {
-                    this.errors = errors.response.data.errors;
-                }
-                this.status = errors.response.status;
-            }
+
+            //Call mutations
+            // this.$store.commit("setLastSearch", {
+            //     from: this.from,
+            //     to: this.to
+            // });
+
+            //Call Action
+            this.$store.dispatch("setLastSearchActions", {
+                from: this.from,
+                to: this.to
+            });
+
+            // console.log(this.$store.state);
+            // try {
+            //     const result = await axios.get(
+            //         `/api/bookables/${
+            //             this.$route.params.id
+            //         }/availability?from=${this.from}&to=${this.to}`
+            //     );
+            //     this.status = result.status;
+            //     this.avaiableBookings = result.data;
+            // } catch (err) {
+            //     if (is422(err)) {
+            //         this.errors = err.response.data.errors;
+            //     }
+            //     this.status = err.response.status;
+            // }
             this.loading = false;
+        },
+        errorFor(fiel) {
+            return this.errors && this.errors[fiel] ? this.errors[fiel] : null;
         }
-        // errorFor(fiel) {
-        //     return this.hasError && this.errors[fiel]
-        //         ? this.errors[fiel]
-        //         : null;
-        // }
     }
 };
 </script>
