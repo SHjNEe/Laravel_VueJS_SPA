@@ -72,27 +72,23 @@ export default {
         }
     },
     methods: {
-        check() {
+        async check() {
             this.loading = true;
-            axios
-                .get(
+            try {
+                const result = await axios.get(
                     `/api/bookables/${
                         this.$route.params.id
                     }/availability?from=${this.from}&to=${this.to}`
-                )
-                .then(response => {
-                    this.status = response.status;
-                    this.avaiableBookings = response.data;
-                })
-                .catch(errors => {
-                    if (is422(errors)) {
-                        this.errors = errors.response.data.errors;
-                    }
-                    this.status = errors.response.status;
-                })
-                .then(() => {
-                    this.loading = false;
-                });
+                );
+                this.status = result.status;
+                this.avaiableBookings = result.data;
+            } catch (err) {
+                if (is422(errors)) {
+                    this.errors = errors.response.data.errors;
+                }
+                this.status = errors.response.status;
+            }
+            this.loading = false;
         }
         // errorFor(fiel) {
         //     return this.hasError && this.errors[fiel]

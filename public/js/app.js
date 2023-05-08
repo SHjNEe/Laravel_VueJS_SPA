@@ -1850,8 +1850,16 @@ module.exports = {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _shared_utils_response__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./../shared/utils/response */ "./resources/js/shared/utils/response.js");
-/* harmony import */ var _shared_mixins_validationErrors_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../shared/mixins/validationErrors.js */ "./resources/js/shared/mixins/validationErrors.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
+/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var _shared_utils_response__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./../shared/utils/response */ "./resources/js/shared/utils/response.js");
+/* harmony import */ var _shared_mixins_validationErrors_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../shared/mixins/validationErrors.js */ "./resources/js/shared/mixins/validationErrors.js");
+
+
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
+
+function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
+
 //
 //
 //
@@ -1901,7 +1909,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
-  mixins: [_shared_mixins_validationErrors_js__WEBPACK_IMPORTED_MODULE_1__["default"]],
+  mixins: [_shared_mixins_validationErrors_js__WEBPACK_IMPORTED_MODULE_2__["default"]],
   data: function data() {
     return {
       from: null,
@@ -1924,23 +1932,54 @@ __webpack_require__.r(__webpack_exports__);
     }
   },
   methods: {
-    check: function check() {
-      var _this = this;
+    check: function () {
+      var _check = _asyncToGenerator(
+      /*#__PURE__*/
+      _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.mark(function _callee() {
+        var result;
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default.a.wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                this.loading = true;
+                _context.prev = 1;
+                _context.next = 4;
+                return axios.get("/api/bookables/".concat(this.$route.params.id, "/availability?from=").concat(this.from, "&to=").concat(this.to));
 
-      this.loading = true;
-      axios.get("/api/bookables/".concat(this.$route.params.id, "/availability?from=").concat(this.from, "&to=").concat(this.to)).then(function (response) {
-        _this.status = response.status;
-        _this.avaiableBookings = response.data;
-      })["catch"](function (errors) {
-        if (Object(_shared_utils_response__WEBPACK_IMPORTED_MODULE_0__["is422"])(errors)) {
-          _this.errors = errors.response.data.errors;
-        }
+              case 4:
+                result = _context.sent;
+                this.status = result.status;
+                this.avaiableBookings = result.data;
+                _context.next = 13;
+                break;
 
-        _this.status = errors.response.status;
-      }).then(function () {
-        _this.loading = false;
-      });
-    } // errorFor(fiel) {
+              case 9:
+                _context.prev = 9;
+                _context.t0 = _context["catch"](1);
+
+                if (Object(_shared_utils_response__WEBPACK_IMPORTED_MODULE_1__["is422"])(errors)) {
+                  this.errors = errors.response.data.errors;
+                }
+
+                this.status = errors.response.status;
+
+              case 13:
+                this.loading = false;
+
+              case 14:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee, this, [[1, 9]]);
+      }));
+
+      function check() {
+        return _check.apply(this, arguments);
+      }
+
+      return check;
+    }() // errorFor(fiel) {
     //     return this.hasError && this.errors[fiel]
     //         ? this.errors[fiel]
     //         : null;
