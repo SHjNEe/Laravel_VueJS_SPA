@@ -3,8 +3,14 @@
         <h6 class="text-uppercase text-secondary font-weight-bolder">
             Check Availability
         </h6>
-        <span v-if="noAvailability" class="text-danger">NOT AVAILABLE</span>
-        <span v-if="hasAvailability" class="text-success"> AVAILABLE</span>
+        <!-- <transition name="fade">
+            <span v-if="noAvailability" class="text-danger">NOT AVAILABLE</span>
+            <span v-if="hasAvailability" class="text-success"> AVAILABLE</span>
+        </transition> -->
+        <transition>
+            <span v-if="noAvailability" class="text-danger">NOT AVAILABLE</span>
+            <span v-if="hasAvailability" class="text-success"> AVAILABLE</span>
+        </transition>
         <div class="form-row">
             <div class="form-group col-md-6">
                 <label for="from">From</label>
@@ -38,7 +44,12 @@
                 class="btn btn-secondary btn-block"
                 :disabled="loading"
             >
-                Check!
+                <span v-if="!loading">
+                    Check!
+                </span>
+                <span v-if="loading">
+                    <i class="fas fa-circle-notch fa-spin"></i> Checking...
+                </span>
             </button>
         </div>
     </div>
@@ -91,20 +102,21 @@ export default {
             });
 
             // console.log(this.$store.state);
-            // try {
-            //     const result = await axios.get(
-            //         `/api/bookables/${
-            //             this.$route.params.id
-            //         }/availability?from=${this.from}&to=${this.to}`
-            //     );
-            //     this.status = result.status;
-            //     this.avaiableBookings = result.data;
-            // } catch (err) {
-            //     if (is422(err)) {
-            //         this.errors = err.response.data.errors;
-            //     }
-            //     this.status = err.response.status;
-            // }
+            try {
+                this.status = (await axios.get(
+                    `/api/bookables/${
+                        this.$route.params.id
+                    }/availability?from=${this.from}&to=${this.to}`
+                )).status;
+
+                this.$emit("availability", this.hasAvailability);
+            } catch (err) {
+                if (is422(err)) {
+                    this.errors = err.response.data.errors;
+                }
+                this.status = err.response.status;
+                this.$emit("availability", this.hasAvailability);
+            }
             this.loading = false;
         },
         errorFor(fiel) {
@@ -123,5 +135,18 @@ label {
 }
 .is-invalid {
     border-color: red;
+}
+
+
+
+/* //Transition no name */
+.v-enter-active,
+.v-leave-active {
+    transition: opacity 0.5s;
+}
+
+.v-enter,
+.v-leave-to {
+    opacity: 0;
 }
 </style>

@@ -14,7 +14,25 @@
                 <review-list :bookable-id="this.id"></review-list>
             </div>
             <div class="col-md-4 pb-4">
-                <availability ></availability>
+                <availability
+                    class="mb-4"
+                    @availability="checkPrice($event)"
+                ></availability>
+                <transition name="fade">
+                    <price-breakdown
+                        class="mb-4"
+                        v-if="price"
+                        :price="price"
+                    ></price-breakdown>
+                </transition>
+                <transition name="fade">
+                    <button
+                        class="btn btn-outline-secondary btn-block"
+                        v-if="price"
+                    >
+                        Book now
+                    </button>
+                </transition>
             </div>
         </div>
     </div>
@@ -26,18 +44,22 @@
 <script>
 import Availability from "./Availability.vue";
 import ReviewList from "./ReviewList.vue";
+import PriceBreakdown from "./PriceBreakdown.vue";
+import { mapState } from "vuex";
 export default {
     props: {
         id: String | Number
     },
     components: {
         Availability,
-        ReviewList
+        ReviewList,
+        PriceBreakdown
     },
     data() {
         return {
             bookable: null,
-            loading: true
+            loading: true,
+            price: null
         };
     },
     created() {
@@ -45,6 +67,32 @@ export default {
             this.bookable = res.data.data;
             this.loading = false;
         });
+    },
+    computed: {
+        ...mapState({
+            lastSearch: "lastSearch"
+        }),
+        from() {
+            return this.lastSearch.from;
+        },
+        to() {
+            return this.lastSearch.to;
+        }
+    },
+    methods: {
+        async checkPrice(hasAvailability) {
+            if (!hasAvailability) {
+                this.price = null;
+                return;
+            }
+            try {
+                this.price = (await axios.get(
+                    `/api/bookables/${this.id}/price?from=${this.from}&to=${
+                        this.to
+                    }`
+                )).data.data;
+            } catch {}
+        }
     }
 };
 </script>

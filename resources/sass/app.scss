@@ -10,3 +10,14 @@
 @import "~@fortawesome/fontawesome-free/scss/fontawesome";
 @import "~@fortawesome/fontawesome-free/scss/regular";
 @import "~@fortawesome/fontawesome-free/scss/solid";
+
+/* //Transition  name: "fade" */
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 2s;
+}
+
+.fade-enter,
+.fade-leave-to {
+    opacity: 0;
+}
