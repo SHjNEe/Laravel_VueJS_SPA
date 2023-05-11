@@ -2100,17 +2100,25 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
               return axios.get("/api/bookables/".concat(_this2.id, "/price?from=").concat(_this2.from, "&to=").concat(_this2.to));
             case 6:
               _this2.price = _context.sent.data.data;
-              _context.next = 11;
+              _context.next = 12;
               break;
             case 9:
               _context.prev = 9;
               _context.t0 = _context["catch"](3);
-            case 11:
+              _this2.price = nu;
+            case 12:
             case "end":
               return _context.stop();
           }
         }, _callee, null, [[3, 9]]);
       }))();
+    },
+    addToBasket: function addToBasket() {
+      this.$store.commit("addToBasket", {
+        bookable: this.bookable,
+        price: this.price,
+        dates: this.lastSearch
+      });
     }
   }
 });
@@ -2493,7 +2501,7 @@ var render = function render() {
         name: "home"
       }
     }
-  }, [_vm._v("Home")]), _vm._v("\n        " + _vm._s(_vm.lastSearchComputed) + "\n    ")], 1), _vm._v(" "), _c("div", {
+  }, [_vm._v("Home")])], 1), _vm._v(" "), _c("div", {
     staticClass: "container mt-4 mb-4 pr-4 pl-4"
   }, [_c("router-view")], 1)]);
 };
@@ -2664,7 +2672,10 @@ var render = function render() {
       name: "fade"
     }
   }, [_vm.price ? _c("button", {
-    staticClass: "btn btn-outline-secondary btn-block"
+    staticClass: "btn btn-outline-secondary btn-block",
+    on: {
+      click: _vm.addToBasket
+    }
   }, [_vm._v("\n                    Book now\n                ")]) : _vm._e()])], 1)])]) : _c("div", [_c("p", [_vm._v("Loading....")])]);
 };
 var staticRenderFns = [];
@@ -79057,11 +79068,22 @@ __webpack_require__.r(__webpack_exports__);
     lastSearch: {
       from: null,
       to: null
+    },
+    basket: {
+      items: []
     }
   },
   mutations: {
     setLastSearch: function setLastSearch(state, payload) {
       state.lastSearch = payload;
+    },
+    addToBasket: function addToBasket(state, payload) {
+      state.basket.items.push(payload);
+    },
+    removeFromBasket: function removeFromBasket(state, payload) {
+      state.basket.items = state.basket.items.filter(function (item) {
+        return item.bookable.id !== payload;
+      });
     }
   },
   actions: {

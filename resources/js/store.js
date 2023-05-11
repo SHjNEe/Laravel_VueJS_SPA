@@ -2,13 +2,24 @@ export default {
     state: {
         lastSearch: {
             from: null,
-            to: null
-        }
+            to: null,
+        },
+        basket: {
+            items: [],
+        },
     },
     mutations: {
         setLastSearch(state, payload) {
             state.lastSearch = payload;
-        }
+        },
+        addToBasket(state, payload) {
+            state.basket.items.push(payload);
+        },
+        removeFromBasket(state, payload) {
+            state.basket.items = state.basket.items.filter(
+                (item) => item.bookable.id !== payload
+            );
+        },
     },
     actions: {
         setLastSearchActions(context, payload) {
@@ -21,8 +32,8 @@ export default {
             if (lastSearch) {
                 context.commit("setLastSearch", JSON.parse(lastSearch));
             }
-        }
-    }
+        },
+    },
     // getters: {
     //     lastSearch(state) {
     //         return state.lastSearch;

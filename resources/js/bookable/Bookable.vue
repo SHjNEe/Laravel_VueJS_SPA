@@ -29,6 +29,7 @@
                     <button
                         class="btn btn-outline-secondary btn-block"
                         v-if="price"
+                        @click="addToBasket"
                     >
                         Book now
                     </button>
@@ -48,36 +49,36 @@ import PriceBreakdown from "./PriceBreakdown.vue";
 import { mapState } from "vuex";
 export default {
     props: {
-        id: String | Number
+        id: String | Number,
     },
     components: {
         Availability,
         ReviewList,
-        PriceBreakdown
+        PriceBreakdown,
     },
     data() {
         return {
             bookable: null,
             loading: true,
-            price: null
+            price: null,
         };
     },
     created() {
-        axios.get(`/api/bookables/${this.id}`).then(res => {
+        axios.get(`/api/bookables/${this.id}`).then((res) => {
             this.bookable = res.data.data;
             this.loading = false;
         });
     },
     computed: {
         ...mapState({
-            lastSearch: "lastSearch"
+            lastSearch: "lastSearch",
         }),
         from() {
             return this.lastSearch.from;
         },
         to() {
             return this.lastSearch.to;
-        }
+        },
     },
     methods: {
         async checkPrice(hasAvailability) {
@@ -86,14 +87,23 @@ export default {
                 return;
             }
             try {
-                this.price = (await axios.get(
-                    `/api/bookables/${this.id}/price?from=${this.from}&to=${
-                        this.to
-                    }`
-                )).data.data;
-            } catch {}
-        }
-    }
+                this.price = (
+                    await axios.get(
+                        `/api/bookables/${this.id}/price?from=${this.from}&to=${this.to}`
+                    )
+                ).data.data;
+            } catch (err) {
+                this.price = nu;
+            }
+        },
+        addToBasket() {
+            this.$store.commit("addToBasket", {
+                bookable: this.bookable,
+                price: this.price,
+                dates: this.lastSearch,
+            });
+        },
+    },
 };
 </script>
 
