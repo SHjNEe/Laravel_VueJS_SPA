@@ -38,5 +38,12 @@ export default {
         itemsInBasket(state) {
             return state.basket.items.length;
         },
+        inBasketAlready(state) {
+            return function (id) {
+                return state.basket.items.reduce((result, item) => {
+                    return result || item.bookable.id === id;
+                }, false);
+            };
+        },
     },
 };

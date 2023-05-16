@@ -30,21 +30,24 @@
                         class="btn btn-outline-secondary btn-block"
                         v-if="price"
                         @click="addToBasket"
-                        :disabled="inBasketAlready"
+                        :disabled="inBasketAlreadyFromGetter"
                     >
                         Book now
                     </button>
                 </transition>
                 <transition name="fade">
                     <button
-                        v-if="inBasketAlready"
+                        v-if="inBasketAlreadyFromGetter"
                         class="btn btn-outline-secondary btn-block"
                         @click="removeFromBasket"
                     >
                         Remove
                     </button>
                 </transition>
-                <div v-if="inBasketAlready" class="mt-4 text-muted warning">
+                <div
+                    v-if="inBasketAlreadyFromGetter"
+                    class="mt-4 text-muted warning"
+                >
                     Seems like you 've added this object to basket already'
                 </div>
             </div>
@@ -85,21 +88,24 @@ export default {
     computed: {
         ...mapState({
             lastSearch: "lastSearch",
-            inBasketAlready(state) {
-                if (null === this.bookable) {
-                    return false;
-                }
-                return state.basket.items.reduce((result, item) => {
-                    return result || item.bookable.id === this.bookable.id;
-                }, false);
-            },
+            // inBasketAlready(state) {
+            //     return state.basket.items.reduce((result, item) => {
+            //         return result || item.bookable.id === this.bookable.id;
+            //     }, false);
+            // },
         }),
-        from() {
-            return this.lastSearch.from;
+        inBasketAlreadyFromGetter() {
+            if (null === this.bookable) {
+                return false;
+            }
+            return this.$store.getters.inBasketAlready(this.bookable.id);
         },
-        to() {
-            return this.lastSearch.to;
-        },
+        // from() {
+        //     return this.lastSearch.from;
+        // },
+        // to() {
+        //     return this.lastSearch.to;
+        // },
     },
     methods: {
         async checkPrice(hasAvailability) {
@@ -110,7 +116,7 @@ export default {
             try {
                 this.price = (
                     await axios.get(
-                        `/api/bookables/${this.id}/price?from=${this.from}&to=${this.to}`
+                        `/api/bookables/${this.id}/price?from=${this.lastSearch.from}&to=${this.lastSearch.to}`
                     )
                 ).data.data;
             } catch (err) {

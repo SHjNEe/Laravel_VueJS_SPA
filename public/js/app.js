@@ -2080,27 +2080,28 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
     });
   },
   computed: _objectSpread(_objectSpread({}, Object(vuex__WEBPACK_IMPORTED_MODULE_3__["mapState"])({
-    lastSearch: "lastSearch",
-    inBasketAlready: function inBasketAlready(state) {
-      var _this2 = this;
+    lastSearch: "lastSearch"
+    // inBasketAlready(state) {
+    //     return state.basket.items.reduce((result, item) => {
+    //         return result || item.bookable.id === this.bookable.id;
+    //     }, false);
+    // },
+  })), {}, {
+    inBasketAlreadyFromGetter: function inBasketAlreadyFromGetter() {
       if (null === this.bookable) {
         return false;
       }
-      return state.basket.items.reduce(function (result, item) {
-        return result || item.bookable.id === _this2.bookable.id;
-      }, false);
-    }
-  })), {}, {
-    from: function from() {
-      return this.lastSearch.from;
-    },
-    to: function to() {
-      return this.lastSearch.to;
-    }
+      return this.$store.getters.inBasketAlready(this.bookable.id);
+    } // from() {
+    //     return this.lastSearch.from;
+    // },
+    // to() {
+    //     return this.lastSearch.to;
+    // },
   }),
   methods: {
     checkPrice: function checkPrice(hasAvailability) {
-      var _this3 = this;
+      var _this2 = this;
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
         return _regeneratorRuntime().wrap(function _callee$(_context) {
           while (1) switch (_context.prev = _context.next) {
@@ -2109,20 +2110,20 @@ function _toPrimitive(input, hint) { if (_typeof(input) !== "object" || input ==
                 _context.next = 3;
                 break;
               }
-              _this3.price = null;
+              _this2.price = null;
               return _context.abrupt("return");
             case 3:
               _context.prev = 3;
               _context.next = 6;
-              return axios.get("/api/bookables/".concat(_this3.id, "/price?from=").concat(_this3.from, "&to=").concat(_this3.to));
+              return axios.get("/api/bookables/".concat(_this2.id, "/price?from=").concat(_this2.lastSearch.from, "&to=").concat(_this2.lastSearch.to));
             case 6:
-              _this3.price = _context.sent.data.data;
+              _this2.price = _context.sent.data.data;
               _context.next = 12;
               break;
             case 9:
               _context.prev = 9;
               _context.t0 = _context["catch"](3);
-              _this3.price = null;
+              _this2.price = null;
             case 12:
             case "end":
               return _context.stop();
@@ -2704,7 +2705,7 @@ var render = function render() {
   }, [_vm.price ? _c("button", {
     staticClass: "btn btn-outline-secondary btn-block",
     attrs: {
-      disabled: _vm.inBasketAlready
+      disabled: _vm.inBasketAlreadyFromGetter
     },
     on: {
       click: _vm.addToBasket
@@ -2713,12 +2714,12 @@ var render = function render() {
     attrs: {
       name: "fade"
     }
-  }, [_vm.inBasketAlready ? _c("button", {
+  }, [_vm.inBasketAlreadyFromGetter ? _c("button", {
     staticClass: "btn btn-outline-secondary btn-block",
     on: {
       click: _vm.removeFromBasket
     }
-  }, [_vm._v("\n                    Remove\n                ")]) : _vm._e()]), _vm._v(" "), _vm.inBasketAlready ? _c("div", {
+  }, [_vm._v("\n                    Remove\n                ")]) : _vm._e()]), _vm._v(" "), _vm.inBasketAlreadyFromGetter ? _c("div", {
     staticClass: "mt-4 text-muted warning"
   }, [_vm._v("\n                Seems like you 've added this object to basket already'\n            ")]) : _vm._e()], 1)])]) : _c("div", [_c("p", [_vm._v("Loading....")])]);
 };
@@ -79213,6 +79214,13 @@ __webpack_require__.r(__webpack_exports__);
   getters: {
     itemsInBasket: function itemsInBasket(state) {
       return state.basket.items.length;
+    },
+    inBasketAlready: function inBasketAlready(state) {
+      return function (id) {
+        return state.basket.items.reduce(function (result, item) {
+          return result || item.bookable.id === id;
+        }, false);
+      };
     }
   }
 });
