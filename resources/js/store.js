@@ -34,9 +34,9 @@ export default {
             }
         },
     },
-    // getters: {
-    //     lastSearch(state) {
-    //         return state.lastSearch;
-    //     }
-    // }
+    getters: {
+        itemsInBasket(state) {
+            return state.basket.items.length;
+        },
+    },
 };

@@ -6,6 +6,12 @@
             <router-link class="navbar-brand mr-auto" :to="{ name: 'home' }"
                 >Home</router-link
             >
+            <router-link class="btn nav-button" :to="{ name: 'home' }">
+                Basket
+                <span v-if="itemsInBasket" class="badge badge-secondary">{{
+                    itemsInBasket
+                }}</span>
+            </router-link>
             <!-- {{ lastSearchComputed }} -->
         </nav>
 
@@ -15,17 +21,22 @@
     </div>
 </template>
 <script>
-import { mapState } from "vuex";
+import { mapState, mapGetters } from "vuex";
 export default {
     data() {
         return {
             lastSearch: this.$store.state.lastSearch,
         };
     },
-    computed: mapState({
-        lastSearchComputed: "lastSearch",
-        // lastSearchComputed: state => state.lastSearch
-    }),
+    computed: {
+        ...mapState({
+            lastSearchComputed: "lastSearch",
+            // lastSearchComputed: state => state.lastSearch
+        }),
+        ...mapGetters({
+            itemsInBasket: "itemsInBasket",
+        }),
+    },
 };
 </script>
 <style>

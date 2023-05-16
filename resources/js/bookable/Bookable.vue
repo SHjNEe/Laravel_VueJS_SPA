@@ -30,10 +30,23 @@
                         class="btn btn-outline-secondary btn-block"
                         v-if="price"
                         @click="addToBasket"
+                        :disabled="inBasketAlready"
                     >
                         Book now
                     </button>
                 </transition>
+                <transition name="fade">
+                    <button
+                        v-if="inBasketAlready"
+                        class="btn btn-outline-secondary btn-block"
+                        @click="removeFromBasket"
+                    >
+                        Remove
+                    </button>
+                </transition>
+                <div v-if="inBasketAlready" class="mt-4 text-muted warning">
+                    Seems like you 've added this object to basket already'
+                </div>
             </div>
         </div>
     </div>
@@ -72,6 +85,14 @@ export default {
     computed: {
         ...mapState({
             lastSearch: "lastSearch",
+            inBasketAlready(state) {
+                if (null === this.bookable) {
+                    return false;
+                }
+                return state.basket.items.reduce((result, item) => {
+                    return result || item.bookable.id === this.bookable.id;
+                }, false);
+            },
         }),
         from() {
             return this.lastSearch.from;
@@ -93,18 +114,27 @@ export default {
                     )
                 ).data.data;
             } catch (err) {
-                this.price = nu;
+                this.price = null;
             }
         },
         addToBasket() {
+            console.log(this.inBasketAlready);
+
             this.$store.commit("addToBasket", {
                 bookable: this.bookable,
                 price: this.price,
                 dates: this.lastSearch,
             });
         },
+        removeFromBasket() {
+            this.$store.commit("removeFromBasket", this.bookable.id);
+        },
     },
 };
 </script>
 
-<style lang="scss" scoped></style>
+<style scoped>
+.warning {
+    font-size: 0.7rem;
+}
+</style>
