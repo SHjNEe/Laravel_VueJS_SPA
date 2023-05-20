@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Http\Request;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -10,7 +12,11 @@
 | contains the "web" middleware group. Now create something great!
 |
 */
+Auth::routes();
 
+Route::middleware('auth')->get('/user', function (Request $request) {
+    return $request->user();
+});
 Route::get('/{any}', function () {
     return view('welcome');
 })->where('any', '^(?!api\/)[\/\w/-]*');

@@ -285,7 +285,7 @@ export default {
             this.bookingAttempted = false;
             this.errors = null;
             try {
-                await axios.post("/api/checkout", {
+                await Axios.post("/api/checkout", {
                     customer: this.customer,
                     bookings: this.basket.map((item) => {
                         return {

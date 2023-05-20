@@ -5,6 +5,7 @@ import Bookables from "./bookables/Bookables.vue";
 import Bookable from "./bookable/Bookable.vue";
 import Review from "./review/Review.vue";
 import Basket from "./basket/Basket.vue";
+// import Login from "./auth/Login.vue";
 
 const routes = [
     { path: "/", component: Bookables, name: "home" },
@@ -17,6 +18,16 @@ const routes = [
     },
     { path: "/review/:id", component: Review, name: "review" },
     { path: "/basket", component: Basket, name: "basket" },
+    {
+        path: "/auth/login",
+        component: require("./auth/Login").default,
+        name: "login",
+    },
+    {
+        path: "/auth/register",
+        component: require("./auth/Register").default,
+        name: "register",
+    },
 ];
 
 const router = new VueRouter({ routes, mode: "history" });
