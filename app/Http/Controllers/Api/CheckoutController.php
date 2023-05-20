@@ -7,7 +7,7 @@ use App\Booking;
 use App\Bookable;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Validator;
+// use Illuminate\Support\Facades\Validator;
 
 class CheckoutController extends Controller
 {
@@ -22,9 +22,9 @@ class CheckoutController extends Controller
         //Option 1
         $data = $request->validate([
             'bookings' => 'required|array|min:1',
-            'bookings.*.bookable_id' => 'required|exist:bookables,id',
-            'bookings.*.from' => 'required|date|after_or_qual:today',
-            'bookings.*.to' => 'required|date|after_or_qual:bookings.*.from',
+            'bookings.*.bookable_id' => 'required|exists:bookables,id',
+            'bookings.*.from' => 'required|date|after_or_equal:today',
+            'bookings.*.to' => 'required|date|after_or_equal:bookings.*.from',
 
             'customer.first_name' => 'required|min:2',
             'customer.last_name' => 'required|min:2',
@@ -83,9 +83,9 @@ class CheckoutController extends Controller
 
 
         $data = array_merge($data, $request->validate([
-            'bookings.*.bookable_id' => 'required|exist:bookables,id',
-            'bookings.*.from' => 'required|date|after_or_qual:today',
-            'bookings.*.to' => 'required|date|after_or_qual:bookings.*.from',
+            // 'bookings.*.bookable_id' => 'required|exist:bookables,id',
+            // 'bookings.*.from' => 'required|date|after_or_qual:today',
+            // 'bookings.*.to' => 'required|date|after_or_qual:bookings.*.from',
             'bookings.*' => ['required', function ($attr, $value, $fail) {
                 $bookable = Bookable::findOrFail($value['bookable_id']);
                 if (!$bookable->availableFor($value['from'], $value['to'])) {
@@ -97,20 +97,27 @@ class CheckoutController extends Controller
         $bookingsData = $data['bookings'];
         $addressData = $data['customer'];
 
-        $bookings = collect($bookingsData)->map(function ($bookingData) use ($addressData) {
-            $bookabe = Bookable::findOrFail($bookingData['bookable_id']);
+        try {
 
-            $booking = new Booking();
-            $booking->from = $bookingData['from'];
-            $booking->to = $bookingData['to'];
-            $booking->price = $bookabe->pricefor($booking->from, $booking->to);
-            $booking->bookable_id = $bookingData['bookable_id'];
+            $bookings = collect($bookingsData)->map(function ($bookingData) use ($addressData) {
+                $bookabe = Bookable::findOrFail($bookingData['bookable_id']);
 
-            $booking->address()->associate(Address::create($addressData));
-            $booking->bookable()->associate($bookabe);
-            $booking->save();
-            return $booking;
-        });
-        return $bookings;
+                $booking = new Booking();
+                $booking->from = $bookingData['from'];
+                $booking->to = $bookingData['to'];
+                $booking->bookable_id = $bookingData['bookable_id'];
+                $booking->price = $bookabe->pricefor($booking->from, $booking->to)['total'];
+
+                $booking->address()->associate(Address::create($addressData));
+                $booking->bookable()->associate($bookabe);
+                $booking->save();
+                return $booking;
+            });
+            return $bookings;
+        } catch (\Illuminate\Database\QueryException $ex) {
+            // Xử lý lỗi truy vấn cơ sở dữ liệu
+            $errors = $ex->getMessage();
+            dd($errors);
+        }
     }
 }
