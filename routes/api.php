@@ -32,3 +32,5 @@ Route::get('bookables/{bookables}/availability', 'Api\BookableAvailabilityContro
 Route::get('bookables/{bookables}/reviews', 'Api\BookableReviewController')->name('bookables.reviews.index');
 
 Route::get('/booking-by-review/{reviewKey}', 'Api\BookingByReviewController')->name('booking.by-review.show');
+
+Route::post('checkout', 'Api\CheckoutController')->name('checkout');
